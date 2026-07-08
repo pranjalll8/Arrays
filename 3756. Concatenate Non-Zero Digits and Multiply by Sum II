@@ -1,0 +1,64 @@
+//
+Leetcode Link: https://leetcode.com/problems/concatenate-non-zero-digits-and-multiply-by-sum-ii/description/
+Approach used: Prefix sum.
+//
+class Solution {
+public:
+    int m=1e9+7;
+    typedef long long ll;
+    vector<int> sumAndMultiply(string s, vector<vector<int>>& queries) {
+        int n=s.size();
+        vector<ll>sum_till_ind(n);
+        ll sum=0;
+        for(int i=0;i<n;i++){
+            sum += (s[i]-'0');
+            sum_till_ind[i]=sum;
+        }
+
+        vector<ll>num_till_ind(n);
+        ll val=0;
+        for(int i=0;i<n;i++){
+            if(s[i]!='0'){
+                val=(val*10+(s[i]-'0'))%m;
+            }
+            num_till_ind[i]=val;
+        }
+
+        vector<int>dig_till_ind(n);
+        int digit=0;
+        for(int i=0;i<n;i++){
+            if(s[i]!='0'){
+                digit++;
+            }
+            dig_till_ind[i]=digit;
+        }
+        
+
+        vector<ll>pow10(n+1,0);
+        pow10[0]=1;
+        for(int i=1;i<=n;i++){
+            pow10[i]=(pow10[i-1]*10)%m;
+        }
+
+
+        int q=queries.size();
+        vector<int>rans(q);
+        for(int i=0;i<queries.size();i++){
+            int u=queries[i][0];
+            int v=queries[i][1];
+            ll val=0;
+            ll sumi=0;
+            if(u==0){
+                val=num_till_ind[v];
+                sumi=sum_till_ind[v];
+            }else{
+                int k=dig_till_ind[v]-dig_till_ind[u-1];
+                val=num_till_ind[v]-((num_till_ind[u-1]*pow10[k] % m)+m)%m;
+                sumi=sum_till_ind[v]-sum_till_ind[u-1];
+            }
+            ll result=(((val*sumi)%m)+m)%m;
+            rans[i]=(int)result;
+        }
+        return rans;
+    }
+};
