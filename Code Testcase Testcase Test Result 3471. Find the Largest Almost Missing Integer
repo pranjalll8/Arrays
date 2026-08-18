@@ -1,0 +1,32 @@
+//
+LeetCode link: https://leetcode.com/problems/find-the-largest-almost-missing-integer/description/
+Approach used: sliding window + Hash map;
+//
+class Solution {
+public:
+    int largestInteger(vector<int>& nums, int k) {
+        int i=0;
+        int j=k;
+        unordered_map<int,int>mp;
+        for(int s=0;s<k;s++){
+            mp[nums[s]]=1;
+        }
+        i++;
+        j++;
+        while(j<=nums.size()){
+            int y=i;
+            while(y<j){
+                mp[nums[y]]++;
+                y++;
+            }
+            i++;
+            j++;
+        }
+    int ans=-1;
+    for(auto[key,value]:mp){
+        if(value==1)ans=max(ans,key);
+    }
+    if(ans==-1)return -1;
+    return ans;
+    }
+};
